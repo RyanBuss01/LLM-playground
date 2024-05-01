@@ -1,22 +1,36 @@
 import React, { useState, useRef, useEffect } from 'react';
+import InstructHandler from '../classes/messageHandler.js';
+const instructHandler = new InstructHandler();
 
-function DynamicTextArea({value, onChange, onKeyPress}) {
+function DynamicTextArea({ value, onChange, onKeyPress, onInstruct, messageCount, setCommand}) {
   const textareaRef = useRef(null);
 
-  const adjustHeight = () => {
+  useEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto'; // Reset the height to recalibrate
+      textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
-  };
+  }, [value]);
 
-  useEffect(() => {
-    adjustHeight(); // Adjust the height initially and on every render
-  });
+ const handleChange = (event) => {
+    const inputValue = event.target.value;
+    // Check if the input starts with '/instruct'
+    if (instructHandler.instructArray.some(prefix => inputValue.startsWith(prefix + ' '))) {
+      const command = instructHandler.commandAssigner(inputValue);
+      setCommand(command); // Set the command to the commandAssigner function
+      onInstruct(true);
+    } else {
+      onInstruct(false);
+    }
+    onChange(event); // Trigger the onChange passed down from the parent
+};
 
-  const handleChange = (event) => {
-    adjustHeight();
-    onChange(event)
+  const handleKeyDown = (event) => {
+    if (event.key === 'Backspace' && instructHandler.instructArray.includes(value)  && messageCount == 0) {
+      const newValue = value.slice(0, -9); // Remove '/instruct' from value
+      onChange({ target: { value: newValue } });
+      onInstruct(false);
+    }
   };
 
   return (
@@ -24,12 +38,13 @@ function DynamicTextArea({value, onChange, onKeyPress}) {
       ref={textareaRef}
       value={value}
       onChange={handleChange}
+      onKeyDown={handleKeyDown}
       style={{
-        overflowY: 'hidden', // Hide the scrollbar
-        minHeight: '20px', // Minimum height
-        maxHeight: '500px', // Maximum expandable height
-        resize: 'none', // Disable resizing (optional)
-        borderRadius: '10px' // Border radius
+        overflowY: 'hidden',
+        minHeight: '20px',
+        maxHeight: '500px',
+        resize: 'none',
+        borderRadius: '10px'
       }}
       placeholder="Type something..."
       onKeyPress={onKeyPress}
