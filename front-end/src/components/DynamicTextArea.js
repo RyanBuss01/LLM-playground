@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import InstructHandler from '../classes/messageHandler.js';
-const instructHandler = new InstructHandler();
+import {instructArray, commandAssigner} from '../classes/messageHandler.js';
 
 function DynamicTextArea({ value, onChange, onKeyPress, onInstruct, messageCount, setCommand}) {
   const textareaRef = useRef(null);
-
+ 
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -15,8 +14,8 @@ function DynamicTextArea({ value, onChange, onKeyPress, onInstruct, messageCount
  const handleChange = (event) => {
     const inputValue = event.target.value;
     // Check if the input starts with '/instruct'
-    if (instructHandler.instructArray.some(prefix => inputValue.startsWith(prefix + ' '))) {
-      const command = instructHandler.commandAssigner(inputValue);
+    if (instructArray.some(prefix => inputValue.startsWith(prefix + ' '))) {
+      const command = commandAssigner(inputValue);
       setCommand(command); // Set the command to the commandAssigner function
       onInstruct(true);
     } else {
@@ -26,7 +25,7 @@ function DynamicTextArea({ value, onChange, onKeyPress, onInstruct, messageCount
 };
 
   const handleKeyDown = (event) => {
-    if (event.key === 'Backspace' && instructHandler.instructArray.includes(value)  && messageCount == 0) {
+    if (event.key === 'Backspace' && instructArray.includes(value)  && messageCount == 0) {
       const newValue = value.slice(0, -9); // Remove '/instruct' from value
       onChange({ target: { value: newValue } });
       onInstruct(false);

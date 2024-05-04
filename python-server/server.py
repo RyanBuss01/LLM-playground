@@ -10,12 +10,26 @@ CORS(app)  # Enable CORS for all routes
 modelVar = ModelHandler()
 modelVar.load()
 
+
+# Define a handler for the commands
+def commandHandler(messages, command):
+    if(command == '/instruct'):
+            return modelVar.predict(messages)
+
+def messagesHandler(messages):
+    if(messages[0]['role']=='system'  and messages[0]['instruct'] == True):
+        command = messages[0]['instruction']
+        return commandHandler(messages, command)
+    else:
+        return modelVar.predict(messages)
+
+
 # Define a route for the root URL '/'
 @app.route('/' , methods=['POST'])
 def index():
     print('request recieved')
     data = request.json
-    message = modelVar.predict(data['messages'])
+    message = messagesHandler(data['messages'])
     return message
 
 

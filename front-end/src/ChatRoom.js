@@ -1,11 +1,14 @@
+// Author: Ryan Bussert
+// Chatroom page that displays messages and allows user to send messages
+// 
+
 import React, { useState } from 'react';
 import ChatMessage from './ChatMessage';
 import DynamicTextArea from './components/DynamicTextArea';
 import { GrLinkUp } from "react-icons/gr";
 import axios from 'axios';
 import Overlay from './components/Overlay';
-import InstructHandler from './classes/messageHandler.js';
-const instructHandler = new InstructHandler();
+import {assignMessage} from './classes/messageHandler.js';
 
 
 function ChatRoom() {
@@ -36,7 +39,8 @@ function ChatRoom() {
       let updatedMessages = [...messages];
       let text = inputText
       if(overlayActive && instructText !== '') {
-        updatedMessages = [...messages, instructHandler.assignMessage(instructText, command)];
+        console.log(instructText, command)
+        updatedMessages = [...messages, assignMessage(instructText, command)];
         setInputText('');
         setInstructText('');
         setOverlayActive(false);
@@ -69,13 +73,15 @@ function ChatRoom() {
       <div className="overlay-container">
       <Overlay 
         isActive={overlayActive}  
-        onInputChange={handleInstructTextChange}/>
+        onInputChange={handleInstructTextChange}
+        instruction={command}
+        />
       <div className="input-area">
         <DynamicTextArea
           value={inputText}
           onChange={updateText}
           onKeyPress={(e) => e.key === 'Enter' ? sendMessage() : null}
-          onInstruct={(isActive) => {console.log(isActive);setOverlayActive(isActive)}}
+          onInstruct={(isActive) => {setOverlayActive(isActive)}}
           setCommand={setCommand}
           sendMessage={sendMessage}
           messageCount={messages.length}
