@@ -13,7 +13,7 @@ const instructArray= [
 ]
 
 const assignOverlay = (text, onInputChange) => {
-    if(text=='/instruct') {
+    if(text==='/instruct') {
         return (
             <div className="instruct-overlay" >
               <div className="instruct-title">Enter Instruction: </div>
@@ -26,13 +26,23 @@ const assignOverlay = (text, onInputChange) => {
             </div>
           );
     }
-    else if(text=='/image') {
+    else if(text==='/image') {
         return (
             <div className="instruct-overlay" >
               <div className="instruct-title">Describe your image  </div>
             </div>
           );
     }
+}
+
+const assignSlice = (text, command) => {
+    if(command==='/instruct') {
+        return 9;
+    }
+    else if(command==='/image') {
+        return 6;
+    }
+    return 0;
 }
 
 const assignMessage = (text, command) => {
@@ -47,4 +57,4 @@ const commandAssigner = (text) => {
     }
 }
 
-export {instructArray, assignOverlay, assignMessage, commandAssigner};
+export {instructArray, assignOverlay, assignMessage, commandAssigner, assignSlice};

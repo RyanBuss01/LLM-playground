@@ -3,3 +3,4 @@ saved_models/
 image/
 
 front-end/node_modules/
+python-server/__pycache__/

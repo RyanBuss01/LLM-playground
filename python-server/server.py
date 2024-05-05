@@ -7,21 +7,27 @@ from modelHandler import ModelHandler
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-modelVar = ModelHandler()
-modelVar.load()
+chat_model = ModelHandler('llama')
+image_model = ModelHandler('image')
 
 
 # Define a handler for the commands
 def commandHandler(messages, command):
     if(command == '/instruct'):
-            return modelVar.predict(messages)
+        return chat_model.predict(messages)
+    if(command == '/image'):
+        return image_model.predict(messages)
+         
 
 def messagesHandler(messages):
     if(messages[0]['role']=='system'  and messages[0]['instruct'] == True):
         command = messages[0]['instruction']
         return commandHandler(messages, command)
+    elif(messages[-1]['role']=='user' and messages[-1]['instruct'] == True):
+        command = messages[-1]['instruction']
+        return commandHandler(messages, command)
     else:
-        return modelVar.predict(messages)
+        return chat_model.predict(messages)
 
 
 # Define a route for the root URL '/'

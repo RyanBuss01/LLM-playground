@@ -8,7 +8,7 @@ import DynamicTextArea from './components/DynamicTextArea';
 import { GrLinkUp } from "react-icons/gr";
 import axios from 'axios';
 import Overlay from './components/Overlay';
-import {assignMessage} from './classes/messageHandler.js';
+import {assignMessage, assignSlice} from './classes/messageHandler.js';
 
 
 function ChatRoom() {
@@ -27,7 +27,10 @@ function ChatRoom() {
   const messageQuery = async (msgs) => {
     try {
       const response = await axios.post('http://localhost:5000/', { messages: msgs });
-      setMessages([...msgs, { role: "system", content: response.data, id: messages.length }]);
+      const content = response.data['content'];
+      const type = response.data['type'];
+
+      setMessages([...msgs, { role: "system", content: content, id: messages.length, type: type }]);
     } catch (error) {
       console.error('Error sending data:', error);
     }
@@ -39,16 +42,14 @@ function ChatRoom() {
       let updatedMessages = [...messages];
       let text = inputText
       if(overlayActive && instructText !== '') {
-        console.log(instructText, command)
         updatedMessages = [...messages, assignMessage(instructText, command)];
         setInputText('');
         setInstructText('');
         setOverlayActive(false);
-        text = inputText.slice(10);
       }
-
+      text = inputText.slice(assignSlice(inputText, command))
       setIsLoading(true);
-      const newMessage = { role: "user", content: text, id: messages.length };
+      const newMessage = { role: "user", content: text, id: messages.length, instruct: overlayActive , instruction: command, type: 'chat'};
       updatedMessages = [...updatedMessages, newMessage]; // Updated state
       setMessages(updatedMessages); // Update state
       setInputText('');
@@ -68,7 +69,9 @@ function ChatRoom() {
   return (
     <div className="chat-room">
       <div className="messages">
-        {messages.map((msg,i) => (i==0 && msg.role=='system') ? <></> : <ChatMessage key={msg.id} text={msg.content} role={msg.role}/>)}
+        {messages.map((msg,i) => (i===0 && msg.role==='system') ? <></> 
+        : <ChatMessage key={msg.id} text={msg.content} role={msg.role} type={msg.type}/>)
+        }
       </div>
       <div className="overlay-container">
       <Overlay 
