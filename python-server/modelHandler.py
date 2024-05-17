@@ -54,10 +54,10 @@ class ModelHandler:
             )
             response = outputs[0][input_ids.shape[-1]:]
             message = self.tokenizer.decode(response, skip_special_tokens=True)
-            return {'content': message, 'type': 'chat'}
+            return {'role':'system', 'content': message, 'type': 'chat'}
         elif(self.selectedModel == 'image'):
             image = self.pipe(messages[-1]['content'], num_inference_steps=25).images[0]
             img_path = "../images/result.jpg"
             image.save(img_path)
-            return {'content': img_path, 'type': 'image'}
+            return {'role':'system', 'content': img_path, 'type': 'image'}
         

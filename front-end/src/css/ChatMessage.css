@@ -1,0 +1,54 @@
+.chat-message {
+    display: flex;
+    align-items: flex-start;
+    padding-inline: 30px;
+    gap: 40px;
+  }
+  
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    margin-top: 20px;
+  }
+  
+  .markdown-container {
+    max-width: 80%;
+    padding: 10px 20px;
+    border-radius: 20px;
+    color: var(--text-color);
+    word-wrap: break-word; /* Ensure long words break correctly */
+  }
+  
+  .markdown-container p {
+    margin: 0 0 10px; /* Add space between paragraphs */
+  }
+  
+  .markdown-container ul,
+  .markdown-container ol {
+    padding-left: 20px; /* Indent lists */
+  }
+  
+  .markdown-container h1,
+  .markdown-container h2,
+  .markdown-container h3,
+  .markdown-container h4,
+  .markdown-container h5,
+  .markdown-container h6 {
+    margin: 10px 0; /* Add space above and below headings */
+  }
+  
+  .markdown-container code {
+    background-color: #f0f0f0;
+    padding: 2px 4px;
+    border-radius: 4px;
+  }
+  
+  .markdown-container pre {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  

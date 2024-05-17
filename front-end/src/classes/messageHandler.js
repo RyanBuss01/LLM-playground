@@ -9,7 +9,8 @@
 
 const instructArray= [
     '/instruct',
-    '/image'
+    '/image',
+    '/helps'
 ]
 
 const assignOverlay = (text, onInputChange) => {
@@ -41,6 +42,9 @@ const assignSlice = (text, command) => {
     }
     else if(command==='/image') {
         return 6;
+    }
+    else if(command==='/help') {
+        return 5;
     }
     return 0;
 }

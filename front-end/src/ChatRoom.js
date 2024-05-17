@@ -24,20 +24,18 @@ function ChatRoom() {
     setInstructText(e.target.value)
   }
 
-  const messageQuery = async (msgs) => {
+  const messageQuery = async (msg) => {
     try {
-      const response = await axios.post('http://localhost:5000/', { messages: msgs });
-      const content = response.data['content'];
-      const type = response.data['type'];
-
-      setMessages([...msgs, { role: "system", content: content, id: messages.length, type: type }]);
+      const response = await axios.post('http://localhost:5000/', { content: msg, command: command, commandData: instructText });
+      setMessages(response["data"]);
     } catch (error) {
       console.error('Error sending data:', error);
     }
     setIsLoading(false);
   }; 
 
-  const sendMessage = () => {
+  const sendMessage = (event) => {
+    event.preventDefault();
     if (inputText !== '' && !isLoading) {
       let updatedMessages = [...messages];
       let text = inputText
@@ -49,11 +47,11 @@ function ChatRoom() {
       }
       text = inputText.slice(assignSlice(inputText, command))
       setIsLoading(true);
-      const newMessage = { role: "user", content: text, id: messages.length, instruct: overlayActive , instruction: command, type: 'chat'};
+      const newMessage = { role: "user", content: text, type: 'chat'};
       updatedMessages = [...updatedMessages, newMessage]; // Updated state
       setMessages(updatedMessages); // Update state
       setInputText('');
-      messageQuery(updatedMessages); // Pass updated state to messageQuery
+      messageQuery(newMessage); // Pass updated state to messageQuery
     }
   };
 
@@ -83,7 +81,7 @@ function ChatRoom() {
         <DynamicTextArea
           value={inputText}
           onChange={updateText}
-          onKeyPress={(e) => e.key === 'Enter' ? sendMessage() : null}
+          onKeyPress={(e) => e.key === 'Enter' ?  sendMessage(e) : null}
           onInstruct={(isActive) => {setOverlayActive(isActive)}}
           setCommand={setCommand}
           sendMessage={sendMessage}
