@@ -1,11 +1,21 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import roboImage from './res/robo.png';
 import personImage from './res/person.png';
 import ReactMarkdown from 'react-markdown';
 import './css/ChatMessage.css';
 
 function ChatMessage({ text, role, type }) {
-  console.log(text)
+  const [imageUrl, setImageUrl] = useState('');
+  
+  useEffect(() => {
+    if (type === 'image') {
+      // Assuming the image name is passed in the text or some other way
+      const imageName = text;  // Adjust this based on how you get the image name
+      setImageUrl(`http://localhost:5000/image?image_name=${imageName}`);
+    }
+  }, [type, text]);
+
+
   return (
     <div className="chat-message">
       {
@@ -15,7 +25,8 @@ function ChatMessage({ text, role, type }) {
         : <img src={roboImage} alt="Avatar" className="avatar" />
       }
       {
-        type==='image' ? <img src={`/images/result.jpg`} alt="Message Content" className="message-image" />
+        type==='image' ?
+        <img src={imageUrl} alt="Message Content" className="message-image" />
         : <div className=''> 
           <ReactMarkdown>{text}</ReactMarkdown>
          </div>

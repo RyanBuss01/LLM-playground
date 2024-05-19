@@ -19,19 +19,32 @@ function ChatRoom() {
   const [overlayActive, setOverlayActive] = useState(false);
   const [instructText, setInstructText] = useState('');
   const [command, setCommand] = useState('');
-
+  const [id, setId] = useState(0);
+  const [newChatRoom, setNewChatRoom] = useState(true);
   const handleInstructTextChange = (e) => {
     setInstructText(e.target.value)
   }
 
   const messageQuery = async (msg) => {
     try {
-      const response = await axios.post('http://localhost:5000/', { content: msg, command: command, commandData: instructText });
-      setMessages(response["data"]);
+      const response = await axios.post('http://localhost:5000/', 
+      { 
+        content: msg, 
+        command: command, 
+        commandData: instructText, 
+        isNewChatRoom: newChatRoom,
+      },
+    );
+    console.log(response.data)
+      setMessages(response.data);
+      setNewChatRoom(false);
+      
     } catch (error) {
       console.error('Error sending data:', error);
     }
     setIsLoading(false);
+    setCommand('');
+    setOverlayActive(false);
   }; 
 
   const sendMessage = (event) => {
@@ -51,7 +64,7 @@ function ChatRoom() {
       updatedMessages = [...updatedMessages, newMessage]; // Updated state
       setMessages(updatedMessages); // Update state
       setInputText('');
-      messageQuery(newMessage); // Pass updated state to messageQuery
+      messageQuery(text); // Pass updated state to messageQuery
     }
   };
 

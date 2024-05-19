@@ -4,3 +4,5 @@ image/
 
 front-end/node_modules/
 python-server/__pycache__/
+python-server/flask_session/
+python-server/messages/

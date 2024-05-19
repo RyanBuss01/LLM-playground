@@ -1,3 +1,4 @@
+import os
 import torch
 from transformers import AutoProcessor, MusicgenForConditionalGeneration, AutoTokenizer, AutoModelForCausalLM
 from diffusers import StableDiffusionPipeline, DPMSolverMultistepScheduler
@@ -32,6 +33,7 @@ class ModelHandler:
         
 
     def predict(self, messages):
+        print(messages)
         if(self.selectedModel == 'llama'):
             input_ids = self.tokenizer.apply_chat_template(
                 messages,
@@ -57,7 +59,9 @@ class ModelHandler:
             return {'role':'system', 'content': message, 'type': 'chat'}
         elif(self.selectedModel == 'image'):
             image = self.pipe(messages[-1]['content'], num_inference_steps=25).images[0]
-            img_path = "../images/result.jpg"
+            random_hex = os.urandom(8).hex()
+            image_name = f'{random_hex}.jpg'
+            img_path = f"../images/{image_name}"
             image.save(img_path)
-            return {'role':'system', 'content': img_path, 'type': 'image'}
+            return {'role':'system', 'content': image_name, 'type': 'image'}
         
