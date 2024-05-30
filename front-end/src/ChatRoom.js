@@ -2,28 +2,38 @@
 // Chatroom page that displays messages and allows user to send messages
 // 
 
-import React, { useState } from 'react';
+import './css/ChatRoom.css';
+import './css/firefly.sass'
+import React, { useState, useEffect } from 'react';
 import ChatMessage from './ChatMessage';
 import DynamicTextArea from './components/DynamicTextArea';
 import { GrLinkUp } from "react-icons/gr";
 import axios from 'axios';
 import Overlay from './components/Overlay';
-import {assignMessage, assignSlice} from './classes/messageHandler.js';
+import { assignSlice} from './classes/messageHandler.js';
+import PuffLoader from "react-spinners/PuffLoader"; // Import the loading spinner
 
 
 function ChatRoom() {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
-  const [buttonActive, setButtonActive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [overlayActive, setOverlayActive] = useState(false);
   const [instructText, setInstructText] = useState('');
   const [command, setCommand] = useState('');
-  const [id, setId] = useState(0);
   const [newChatRoom, setNewChatRoom] = useState(true);
   const handleInstructTextChange = (e) => {
     setInstructText(e.target.value)
   }
+
+  const scrollToBottom = () => {
+    const scrollContainer = document.getElementById('scroll-container');
+    scrollContainer.scrollTop = scrollContainer.scrollHeight;
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const messageQuery = async (msg) => {
     try {
@@ -35,7 +45,6 @@ function ChatRoom() {
         isNewChatRoom: newChatRoom,
       },
     );
-    console.log(response.data)
       setMessages(response.data);
       setNewChatRoom(false);
       
@@ -53,7 +62,7 @@ function ChatRoom() {
       let updatedMessages = [...messages];
       let text = inputText
       if(overlayActive && instructText !== '') {
-        updatedMessages = [...messages, assignMessage(instructText, command)];
+        // updatedMessages = [...messages, assignMessage(instructText, command)];
         setInputText('');
         setInstructText('');
         setOverlayActive(false);
@@ -65,21 +74,28 @@ function ChatRoom() {
       setMessages(updatedMessages); // Update state
       setInputText('');
       messageQuery(text); // Pass updated state to messageQuery
+      scrollToBottom();
     }
   };
 
   const updateText = (e) => {
     setInputText(e.target.value)
-    if(inputText !== '') {
-      setButtonActive(false)
-    } else {
-      setButtonActive(true)
-    }
   }
 
   return (
     <div className="chat-room">
-      <div className="messages">
+      {
+       messages.length===0 ? Array.from({ length: 10  }, (_, index) => (
+        <div className="firefly" key={index}></div>
+      )) : <></>
+    }
+
+      {
+      messages.length>0 && messages[0].role==='system' ?<div className="chat-header">
+        <p>Instruction: {messages[0].content}</p>
+      </div> : <></>
+      }
+      <div className="messages" id='scroll-container'>
         {messages.map((msg,i) => (i===0 && msg.role==='system') ? <></> 
         : <ChatMessage key={msg.id} text={msg.content} role={msg.role} type={msg.type}/>)
         }
@@ -100,9 +116,15 @@ function ChatRoom() {
           sendMessage={sendMessage}
           messageCount={messages.length}
         />
-        <button className="send-button" onClick={sendMessage}>
+       { 
+       isLoading ?
+       <div className="loading-spinner">
+            <PuffLoader size={25} color={"#ffffff"} loading={isLoading} />
+          </div>
+       : <button className={"send-button"} onClick={sendMessage}>
           <GrLinkUp style={{color:'white', width: '25', height: '25'}}/>
         </button>
+        }
         </div>
       </div>
     </div>

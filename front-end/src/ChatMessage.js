@@ -5,13 +5,26 @@ import ReactMarkdown from 'react-markdown';
 import './css/ChatMessage.css';
 
 function ChatMessage({ text, role, type }) {
-  const [imageUrl, setImageUrl] = useState('');
+  const [url, setUrl] = useState('');
+
+  const convertJsonToMarkdown = (data) => {
+    let markdown = `# ${data.header}\n\n`;
+    data.sections.forEach(section => {
+      markdown += `## ${section.subHeader}\n\n${section.description}\n\n`;
+    });
+    return markdown;
+  };
   
   useEffect(() => {
     if (type === 'image') {
       // Assuming the image name is passed in the text or some other way
       const imageName = text;  // Adjust this based on how you get the image name
-      setImageUrl(`http://localhost:5000/image?image_name=${imageName}`);
+      setUrl(`http://localhost:5000/image?image_name=${imageName}`);
+    }
+    if (type === 'music') {
+      // Assuming the image name is passed in the text or some other way
+      const musicName = text;  // Adjust this based on how you get the image name
+      setUrl(`http://localhost:5000/music?music_name=${musicName}`);
     }
   }, [type, text]);
 
@@ -26,9 +39,19 @@ function ChatMessage({ text, role, type }) {
       }
       {
         type==='image' ?
-        <img src={imageUrl} alt="Message Content" className="message-image" />
-        : <div className=''> 
-          <ReactMarkdown>{text}</ReactMarkdown>
+        <img src={url} alt="Message Content" className="message-image" />
+        : type === 'music' ? (
+          <div className='audio-container'>
+            <audio controls>
+              <source src={url} type="audio/wav" />
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+        ) : type==='help' ? <div className='markdown-container'> 
+        <ReactMarkdown className="markdown-content">{convertJsonToMarkdown(JSON.parse(text))}</ReactMarkdown>
+       </div>
+        : <div className='markdown-container'> 
+          <ReactMarkdown className="markdown-content">{text}</ReactMarkdown>
          </div>
 
       }

@@ -25,17 +25,27 @@ def write_messages(messages):
     with open('./messages/messages.json', 'w') as f:
         json.dump(messages, f)
 
+def updateMessagesCallback(updatedMessages):
+    global messages
+    messages = updatedMessages
+
 @app.route('/image', methods=['GET'])
 def get_image():
     image_name = request.args.get('image_name')
-    print('run')
-    # image_name = 'result.jpg'
-    # Resolve the path correctly relative to the project root
     images_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'images'))
     image_path = os.path.join(images_dir, image_name)
-    print(image_path)
     if os.path.exists(image_path):
         return send_file(image_path, mimetype='image/png')
+    else:
+        return "Image not found", 404
+    
+@app.route('/music', methods=['GET'])
+def get_music():
+    music_name = request.args.get('music_name')
+    music_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'music'))
+    music_path = os.path.join(music_dir, music_name)
+    if os.path.exists(music_path):
+        return send_file(music_path, mimetype='audio/wav')
     else:
         return "Image not found", 404
 
@@ -43,21 +53,36 @@ def get_image():
 # Define a route for the root URL '/'
 @app.route('/' , methods=['POST'])
 def index():
-    data = request.json
-    if data['isNewChatRoom']:
-        messages = []
-    else:
-        messages = read_messages()
-    command = data['command']; 
-    commandData = data['commandData']
-    formatedContent = { 'role': "user", 'content': data['content'], 'type': 'chat'}
-    messageHandler = MessageHandler(messages, command, commandData)
-    response = messageHandler.getResponse(formatedContent)
-    messages.append(formatedContent)
-    messages.append(response)
-    write_messages(messages)
-    print(messages)
-    return  jsonify(messages)
+    global messages
+    try:
+
+        data = request.json
+        if data['isNewChatRoom']:
+            messages = []
+        else:
+            messages = read_messages()
+        command = data['command']; 
+        commandData = data['commandData']
+        if command:
+            type= 'chat-command'
+        else:
+            type= 'chat'
+        print("command: ", command)
+        formatedContent = { 'role': "user", 'content': data['content'], 'type': type}
+        messageHandler = MessageHandler(messages, command, commandData, updateMessagesCallback)
+        response = messageHandler.getResponse(formatedContent)
+        messages.append(formatedContent)
+        messages.append(response)
+        write_messages(messages)
+        return  jsonify(messages)
+    
+    except Exception as e:
+        print("Error: ", e)
+        formatedContent = { 'role': "user", 'content': data['content'], 'type': 'chat-error'}
+        errorContent = { 'role': "system", 'content': 'An error occured loading model', 'type': 'chatbot-error'}
+        messages.append(formatedContent)
+        messages.append(errorContent)
+        return "Error", 500
 
 
 if __name__ == '__main__':

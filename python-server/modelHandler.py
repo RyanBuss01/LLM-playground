@@ -2,6 +2,8 @@ import os
 import torch
 from transformers import AutoProcessor, MusicgenForConditionalGeneration, AutoTokenizer, AutoModelForCausalLM
 from diffusers import StableDiffusionPipeline, DPMSolverMultistepScheduler
+from scipy.io.wavfile import write
+import numpy as np
 
 
 
@@ -29,6 +31,22 @@ class ModelHandler:
             self.pipe = StableDiffusionPipeline.from_pretrained(model_path, torch_dtype=torch.float16)
             self.pipe.scheduler = DPMSolverMultistepScheduler.from_config(self.pipe.scheduler.config)
             self.pipe = self.pipe.to("cuda")
+
+        elif(selectedModel == 'code'):
+            token_path = "../saved_models/tokenizer/code-llama-instruct"
+            model_path = "../saved_models/code-llama-instruct"
+            self.tokenizer = AutoTokenizer.from_pretrained(token_path)
+            self.model = AutoModelForCausalLM.from_pretrained(
+                model_path,
+                torch_dtype=torch.bfloat16,
+                device_map="cuda",
+            )
+        elif(selectedModel == 'music'):
+            model_path = "../models/musicGen"
+            self.tokenizer = AutoProcessor.from_pretrained(model_path)
+            self.model = MusicgenForConditionalGeneration.from_pretrained(model_path)
+            # self.model.cuda()
+
         print("Model loaded")
         
 
@@ -65,3 +83,35 @@ class ModelHandler:
             image.save(img_path)
             return {'role':'system', 'content': image_name, 'type': 'image'}
         
+        elif(self.selectedModel=='code'):
+            input_ids = self.tokenizer.apply_chat_template(
+                messages,
+                add_generation_prompt=True,
+                return_tensors="pt"
+            )
+            outputs = self.model.generate(
+                input_ids.to(self.model.device),
+                max_new_tokens=256,
+            )
+            response = outputs[0][input_ids.shape[-1]:]
+            content=self.tokenizer.decode(response, skip_special_tokens=True)
+
+            return {'role':'system', 'content': content, 'type': 'chat'}
+        
+        elif(self.selectedModel=='music'):
+            print("all-messages: ", messages)
+            print("last-content: ", messages[-1]['content'])
+            inputs = self.tokenizer(
+            text=[messages[-1]['content']],
+            padding=True,
+            return_tensors="pt",
+            )
+            # .to(self.model.device)
+
+            audio_values = self.model.generate(**inputs, max_new_tokens=256)
+            sampling_rate = self.model.config.audio_encoder.sampling_rate
+            random_hex = os.urandom(8).hex()
+            music_name = f'{random_hex}.wav' 
+            music_path = f"../music/{music_name}"
+            write(music_path, sampling_rate, audio_values.astype(np.int16))
+            return {'role':'system', 'content': music_name, 'type': 'music'}

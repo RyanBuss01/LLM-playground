@@ -1,0 +1,36 @@
+/* Add this CSS */
+
+.logo-header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Space between LogoHeader and the icon */
+    padding: 10px 0; /* Optional: Adjust padding for alignment */
+    padding-right: 10px;
+  }
+  
+  .sidebar-icon {
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 24px; /* Adjust icon size as needed */
+  }
+  
+  .new-chat {
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    height: 50px;
+    width: 160px;
+    border-color: var(--accent-color-secondary); /* Specify the color */
+    border-style: solid; /* Needed to make the border visible */
+    border-width: 2px; /* Specify the width of the border */
+    border-radius: 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  
+  .new-chat:hover{
+    background-color: var(--hover-color);
+  }
+  
+  

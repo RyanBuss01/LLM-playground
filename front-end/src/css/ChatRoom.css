@@ -1,0 +1,156 @@
+
+.chat-room {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Ensures the input area stays at the bottom */
+    align-items: center;
+    height: 100%; /* Use available height */
+  }
+  
+  .messages {
+    overflow-y: auto;
+    flex: 1; /* Allows this div to grow and fill the space, pushing input area down */
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding: 10px 50px;
+    max-width: 1000px;
+    width: 100%;
+  }
+  
+  .input-area {
+    display: flex;
+    justify-content: center;
+    width: 100%; /* Use available width */
+    padding: 30px;
+    margin-bottom: 30px;
+    align-items: stretch;
+    box-sizing: border-box;
+  }
+
+  .dynamic-textarea{
+    flex: 1; /* Makes textarea take up available space */
+    margin-right: 30px; /* Spacing between textarea and button */
+    margin-left: 50px;
+    background-color: var(--background-color);
+    padding: 10px;
+    border: 1px solid var(--accent-color-secondary);
+    border-radius: 5px;
+    color: var(--text-color);
+    min-height: 30px;
+    max-height: 500px; /* Maximum height before scrolling */
+    font-size: 16px;
+    overflow-y: hidden;
+  }
+
+
+  textarea:focus {
+    border-color: var(--accent-color); /* Changes the border to white */
+    outline: var(--accent-color); /* White outline to make it more noticeable */
+  }
+  
+
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 60px;  /* Minimized width */
+    }
+  
+    .sidebar a {
+      text-align: center;
+      padding: 10px 6px;
+    }
+  }
+  
+
+  /* overlay settings */
+
+  .instruct-overlay {
+    position: relative;
+    top: 20px;
+    margin-left: 80px;
+    width: 80%;
+    margin-right: 150px;
+    background-color: rgb(0, 0, 0);
+    border-radius: 20px;
+    flex-direction: column;
+    display: flex;        /* Enables flexbox */
+    justify-content: center; /* Centers horizontally */
+    align-items: center;  /* Centers vertically */
+    border: 1px solid #ffffff;
+  }
+  
+  
+  .instruct-text {
+    color: var(--text-color);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #f0f0f0; /* Set border width and style if you want a visible border */
+    background-color: var(--accent-color-secondary); /* Use this property for background color */
+    outline: none;
+    width: 90%; /* Adjust this value as needed */
+    border-radius: 10px;
+    margin-inline: 40px;
+  }
+  
+  .instruct-text::placeholder {
+    color: #424242; /* Light gray placeholder text */
+    opacity: 1; /* Ensures the color is not semi-transparent */
+  }
+  
+  .instruct-title {
+    align-self: start;
+    margin-left: 25px;
+    margin-top: 10px;
+    color: var(--text-color);
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+
+  .send-button {
+    padding: 10px 20px;
+    background-color: var(--background-secondary-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .send-button:hover {
+    background-color: var(--hover-color);
+  }
+
+
+/* Not active */
+  .send-button-active {
+    padding: 10px 20px;
+    background-color: #a9a9a9;;
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .send-button-active:hover {
+    background-color: #8c8c8c;
+  }
+  
+  
+  .chat-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 150px;
+    color: var(--text-color);
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: 1px solid var(--accent-color);
+  }
+
+  .loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    padding-bottom: 20px;
+  }
+

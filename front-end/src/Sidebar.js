@@ -1,7 +1,8 @@
-import {React, useState} from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import LogoHeader from './components/LogoHeader';
 import { GrAdd } from "react-icons/gr";
+import './css/Sidebar.css';
 
 function Sidebar({ isOpen }) {
   const [links, setLinks] = useState([
@@ -15,10 +16,12 @@ function Sidebar({ isOpen }) {
 
   return (
     <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
-      <LogoHeader />
+      <div className="logo-header-container">
+        <LogoHeader />
+      </div>
       <div className="new-chat" onClick={handleClick}>
-        <GrAdd style={{color:'white', marginRight: '10px', width: '25', height: '25'}}/>
-        <div style={{color: 'white', fontSize: 20}}>New Chat</div>
+        <GrAdd style={{ color: 'white', marginRight: '10px', width: '25', height: '25' }} />
+        <div style={{ color: 'white', fontSize: 20 }}>New Chat</div>
       </div>
       {links.map((link, index) => (
         <Link key={index} to={link.path}>{link.name}</Link>

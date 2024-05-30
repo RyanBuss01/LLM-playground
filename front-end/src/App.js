@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import ChatRoom from './ChatRoom';
+import './css/App.css';
 
 const ArrowIcon = ({ isOpen }) => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -14,7 +15,7 @@ const ArrowIcon = ({ isOpen }) => (
 );
 
 function App() {
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -23,7 +24,7 @@ function App() {
   return (
     <Router>
       <div className="App" style={{ paddingLeft: isSidebarOpen ? '200px' : '0' }}>
-        <Sidebar isOpen={isSidebarOpen} />
+        <Sidebar isOpen={isSidebarOpen} onClick={toggleSidebar}/>
         <button className={`toggle-button ${isSidebarOpen ? '' : 'collapsed'}`} onClick={toggleSidebar}>
           <ArrowIcon isOpen={isSidebarOpen} />
         </button>

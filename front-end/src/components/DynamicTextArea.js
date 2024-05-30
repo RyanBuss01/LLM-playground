@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {instructArray, commandAssigner} from '../classes/messageHandler.js';
 
 function DynamicTextArea({ value, onChange, onKeyPress, onInstruct, messageCount, setCommand}) {
@@ -25,7 +25,7 @@ function DynamicTextArea({ value, onChange, onKeyPress, onInstruct, messageCount
 };
 
   const handleKeyDown = (event) => {
-    if (event.key === 'Backspace' && instructArray.includes(value)  && messageCount == 0) {
+    if (event.key === 'Backspace' && instructArray.includes(value)  && messageCount === 0) {
       const newValue = value.slice(0, -9); // Remove '/instruct' from value
       onChange({ target: { value: newValue } });
       onInstruct(false);
@@ -38,12 +38,14 @@ function DynamicTextArea({ value, onChange, onKeyPress, onInstruct, messageCount
       value={value}
       onChange={handleChange}
       onKeyDown={handleKeyDown}
+      className='dynamic-textarea'
       style={{
         overflowY: 'hidden',
         minHeight: '20px',
         maxHeight: '500px',
         resize: 'none',
-        borderRadius: '10px'
+        borderRadius: '10px',
+        width: '600px',
       }}
       placeholder="Type something..."
       onKeyPress={onKeyPress}

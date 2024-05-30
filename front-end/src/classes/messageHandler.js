@@ -10,7 +10,9 @@
 const instructArray= [
     '/instruct',
     '/image',
-    '/helps'
+    '/help',
+    '/code',
+    '/music'
 ]
 
 const assignOverlay = (text, onInputChange) => {
@@ -34,6 +36,20 @@ const assignOverlay = (text, onInputChange) => {
             </div>
           );
     }
+    else if(text==='/code') {
+        return (
+            <div className="instruct-overlay" >
+              <div className="instruct-title">What coding advice do you need? </div>
+            </div>
+          );
+    }
+    else if(text==='/music') {
+        return (
+            <div className="instruct-overlay" >
+              <div className="instruct-title">Explain what kind of music you want to hear </div>
+            </div>
+          );
+    }
 }
 
 const assignSlice = (text, command) => {
@@ -43,8 +59,14 @@ const assignSlice = (text, command) => {
     else if(command==='/image') {
         return 6;
     }
-    else if(command==='/help') {
+    else if(command==='/code') {
         return 5;
+    }
+    else if(command==='/music') {
+        return 6;
+    }
+    else if(command==='/help') {
+        return 0;
     }
     return 0;
 }

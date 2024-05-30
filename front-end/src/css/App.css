@@ -1,0 +1,80 @@
+.App {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    transition: padding-left 0.3s ease; /* Smooth transition for padding adjustment */
+  }
+
+  .main-content {
+    flex: 1;
+    overflow: hidden; /* or auto if you need scrolling */
+    background-color: var(--background-color); /* Ensures consistent background */
+  }
+  
+
+
+  /* Sidebar styling */
+.sidebar {
+    width: 200px;
+    background-color: var(--background-secondary-color);
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    left: 0;  /* Adjust based on state */
+    top: 0;
+    bottom: 0;
+    transition: left 0.3s ease;  /* Transition the left property for smooth sliding */
+    z-index: 1500; /* Ensure sidebar is above other content but below the toggle button */
+  }
+  
+  .sidebar a {
+    display: block;
+    padding: 10px;
+    color: var(--text_secondary-color);
+    text-decoration: none;
+  }
+  
+  .sidebar a:hover {
+    background-color: var(--hover-color);
+    border-radius: 10px;
+  }
+  
+  .sidebar.closed {
+    left: -200px;  /* Shift left to hide sidebar */
+  }
+  
+  
+  .toggle-button {
+    position: fixed;
+    top: 50%;
+    transform: translateX(50px);
+    left: 200px;  /* Start at the edge of the sidebar */
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    z-index: 2000;  /* Make sure the button is above all other content */
+    transition: left 0.3s ease;
+  }
+  
+  .toggle-button:hover {
+    background-color: var(--hover-color);
+    border-radius: 10px;
+    color: #ffffff;
+  }
+  
+  .toggle-button.collapsed {
+    left: 0; /* Move to the edge of the screen */
+    transform: translateX(50px);
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px; /* or any other width you want */
+    background-color: #333; /* dark gray color */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: #444; /* dark gray color */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+  

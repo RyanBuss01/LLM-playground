@@ -1,6 +1,7 @@
 models/
 saved_models/
 image/
+music/
 
 front-end/node_modules/
 python-server/__pycache__/
