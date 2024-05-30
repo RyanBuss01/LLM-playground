@@ -28,7 +28,7 @@ function ChatRoom() {
 
   const scrollToBottom = () => {
     const scrollContainer = document.getElementById('scroll-container');
-    scrollContainer.scrollTop = scrollContainer.scrollHeight;
+    scrollContainer.scrollTop = scrollContainer.scrollHeight; 
   };
 
   useEffect(() => {
